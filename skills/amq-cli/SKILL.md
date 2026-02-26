@@ -1,6 +1,6 @@
 ---
 name: amq-cli
-version: 1.3.0
+version: 1.4.0
 description: >-
   Coordinate agents via the AMQ CLI for file-based inter-agent messaging.
   Use when you need to send messages to another agent (Claude/Codex),
@@ -8,7 +8,9 @@ description: >-
   Code and Codex CLI, or manage agent-to-agent communication in any
   multi-agent workflow. Triggers include "message codex", "talk to claude",
   "collaborate with partner agent", "AMQ", "inter-agent messaging",
-  or "agent coordination".
+  "agent coordination", "spec", "design with", or "collaborative spec".
+  For spec/design tasks you MUST use `amq coop spec start` — do NOT use
+  `amq send` to deliver specs.
 metadata:
   short-description: Inter-agent messaging via AMQ CLI
   compatibility: claude-code, codex-cli
@@ -44,6 +46,19 @@ When running **outside** `coop exec` (e.g. new conversation, manual terminal):
   ```
 - **Pitfall**: setting only `AM_ME` without `AM_ROOT` relies on `.amqrc` which may have changed. Messages will land in the wrong session's inbox with no error — the target agent won't see them.
 
+## Task Routing — READ THIS FIRST
+
+**Before doing anything**, match your task to the right workflow:
+
+| Your task | What to do | DO NOT |
+|-----------|-----------|--------|
+| **"spec", "design with", "collaborative spec"** | Run `amq coop spec start --topic <name> --partner <agent> --body "Problem..."` — then follow the printed NEXT STEP instructions | Do NOT explore the codebase first. Do NOT draft a spec. Do NOT use `amq send`. |
+| **Send a message, review request, question** | Use `amq send` (see Messaging below) | — |
+| **Swarm / agent teams** | Read [references/swarm-mode.md](references/swarm-mode.md), then use `amq swarm` | — |
+| **Received a `spec_research` message** | Run `amq coop spec status --topic <name>` — then follow the printed NEXT STEP instructions | Do NOT read the sender's research before submitting your own. |
+
+The `amq coop spec` commands print explicit **NEXT STEP** instructions after every command. Follow them.
+
 ## Quick Start
 
 ```bash
@@ -71,25 +86,6 @@ By default, `.amqrc` points to a literal root (e.g., `.agent-mail`). Use `--sess
 - `amq coop exec --session auth claude` → `AM_ROOT=.agent-mail/auth`
 
 Only two env vars: `AM_ROOT` (where) + `AM_ME` (who). The CLI enforces correct routing — just run `amq` commands as-is.
-
-## Environment Rules (IMPORTANT)
-
-When running inside `coop exec`, the environment is already configured. Follow these rules:
-
-- **Always use `amq` from PATH** — never `./amq`, `../amq`, or absolute paths to local binaries
-- **Never override `AM_ROOT` or `AM_ME`** — they are set by `coop exec` and point to the correct session. Do not prefix commands with `AM_ROOT=... amq ...`
-- **Never pass `--root` or `--me` flags** — the env vars handle routing automatically
-- **Just run commands as-is**: `amq send --to codex --body "hello"`
-
-Wrong:
-```bash
-AM_ROOT=.agent-mail AM_ME=claude ./amq send --to codex --body "hello"
-```
-
-Right:
-```bash
-amq send --to codex --body "hello"
-```
 
 ## Messaging
 
@@ -133,10 +129,16 @@ amq list --new --label bug
 | `todo` | — | normal |
 | `status` | — | low |
 | `brainstorm` | — | low |
+| `spec_research` | `spec_research` | normal |
+| `spec_draft` | `spec_review` | normal |
+| `spec_review` | — | normal |
+| `spec_decision` | — | normal |
+
 ## References
 
 For detailed protocols, read the reference file FIRST, then follow its instructions:
 
+- [references/spec-workflow.md](references/spec-workflow.md) — Spec workflow: phases, parallel discipline, templates
 - [references/coop-mode.md](references/coop-mode.md) — Co-op protocol: roles, phased flow, collaboration modes
 - [references/swarm-mode.md](references/swarm-mode.md) — Swarm mode: agent teams, bridge, task workflow
 - [references/message-format.md](references/message-format.md) — Message format: frontmatter schema, field reference
