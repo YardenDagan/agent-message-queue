@@ -52,10 +52,6 @@ const (
 	KindDecision       = "decision"
 	KindStatus         = "status"
 	KindTodo           = "todo"
-	KindSpecResearch   = "spec_research"
-	KindSpecDraft      = "spec_draft"
-	KindSpecReview     = "spec_review"
-	KindSpecDecision   = "spec_decision"
 )
 
 // Header is the JSON frontmatter stored at the top of each message file.
@@ -72,7 +68,7 @@ type Header struct {
 
 	// Co-op mode fields (optional, for inter-agent communication)
 	Priority string         `json:"priority,omitempty"` // urgent, normal, low
-	Kind     string         `json:"kind,omitempty"`     // brainstorm, review_request, review_response, question, answer, decision, status, todo
+	Kind     string         `json:"kind,omitempty"`     // message kind (see ValidKinds())
 	Labels   []string       `json:"labels,omitempty"`   // free-form tags
 	Context  map[string]any `json:"context,omitempty"`  // structured context (paths, symbols, etc.)
 }
@@ -90,7 +86,7 @@ func ValidPriorities() []string {
 
 // ValidKinds returns the list of valid kind values.
 func ValidKinds() []string {
-	return []string{KindBrainstorm, KindReviewRequest, KindReviewResponse, KindQuestion, KindAnswer, KindDecision, KindStatus, KindTodo, KindSpecResearch, KindSpecDraft, KindSpecReview, KindSpecDecision}
+	return []string{KindBrainstorm, KindReviewRequest, KindReviewResponse, KindQuestion, KindAnswer, KindDecision, KindStatus, KindTodo}
 }
 
 // ValidKindsList returns a comma-joined string of valid kind values for usage messages.

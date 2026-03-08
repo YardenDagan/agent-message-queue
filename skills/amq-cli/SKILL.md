@@ -54,7 +54,7 @@ When running **outside** `coop exec` (e.g. new conversation, manual terminal):
 | **"spec", "design with", "collaborative spec"** | Use the `/spec` command instead. It provides structured phase-by-phase guidance. | Do NOT handle spec tasks from this skill. |
 | **Send a message, review request, question** | Use `amq send` (see Messaging below) | — |
 | **Swarm / agent teams** | Read [references/swarm-mode.md](references/swarm-mode.md), then use `amq swarm` | — |
-| **Received a `spec_research` message** | Do your OWN independent research first (explore codebase, read files), submit findings as `spec_research`, THEN read partner's research from the thread. | Do NOT read the sender's research body before submitting your own. Do NOT skip straight to implementation. |
+| **Received message with labels `workflow:spec`** | Follow the spec skill protocol: do independent research first, then engage on the `spec/<topic>` thread. | Do NOT skip straight to implementation. |
 
 ## Quick Start
 
@@ -126,10 +126,6 @@ amq list --new --label bug
 | `todo` | — | normal |
 | `status` | — | low |
 | `brainstorm` | — | low |
-| `spec_research` | `spec_research` | normal |
-| `spec_draft` | `spec_review` | normal |
-| `spec_review` | — | normal |
-| `spec_decision` | — | normal |
 
 ## References
 

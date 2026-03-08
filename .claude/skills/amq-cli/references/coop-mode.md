@@ -19,9 +19,9 @@
 | **Test** | Parallel | Both run tests, report results to leader. |
 
 ```
-Research (parallel) → sync findings
+Research (parallel) -> sync findings
     ↓
-Design (parallel) → leader merges approach
+Design (parallel) -> leader merges approach
     ↓
 Code (split: divide files/modules)
     ↓
@@ -29,7 +29,7 @@ Review (parallel: each reviews other's code)
     ↓
 Test (parallel: both run tests)
     ↓
-Leader prepares commit → user approves → push
+Leader prepares commit -> user approves -> push
 ```
 
 ## Key Rules
@@ -78,11 +78,11 @@ Leader prepares commit → user approves → push
 - `amq send --to <partner>` — send work/findings to partner
 - `amq reply --id <msg_id>` — reply in thread
 
-
 ## Spec Workflow
 
-The spec workflow is a skill-managed protocol using standard AMQ messaging primitives. See [spec-workflow.md](spec-workflow.md) for the full protocol.
+The spec workflow is a skill-managed protocol that uses standard AMQ kinds plus labels (`workflow:spec`, `phase:*`) on thread `spec/<topic>`.
 
-Phases: `research` → `exchange` → `draft` → `review` → `converge` → `done`
+Canonical spec phases are:
+`Research -> Discuss -> Draft -> Review -> Present -> Execute`
 
-All spec messages use thread `spec/<topic>` and the spec message kinds (`spec_research`, `spec_draft`, `spec_review`, `spec_decision`).
+For the full spec protocol, see the amq-spec skill's `spec-workflow.md`.
