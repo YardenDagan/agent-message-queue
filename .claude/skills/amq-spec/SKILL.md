@@ -102,12 +102,20 @@ amq send --to <partner> --kind decision \
 
 ## When You RECEIVE a Spec Message
 
-If you receive a message labeled `workflow:spec`:
+If you receive a message labeled `workflow:spec`, your action depends on the phase:
 
-1. If it is a spec kickoff (`phase:request`), do your **own independent research first**.
-2. Submit your findings with `kind=brainstorm` and `labels=workflow:spec,phase:research`.
-3. Then read full thread context: `amq thread --id spec/<topic> --include-body`.
-4. Continue with Discuss/Draft/Review phases according to thread state.
+| Label | Your action |
+|---|---|
+| `phase:request` | Do your **own independent research first**, then submit findings as `brainstorm` + `phase:research` |
+| `phase:research` | Read thread, start discussion as `brainstorm` + `phase:discuss` |
+| `phase:discuss` | Reply with your analysis, continue discussion until aligned |
+| `phase:draft` | **REVIEW the plan and send feedback** as `review_response` + `phase:review`. Do NOT implement. |
+| `phase:review` | Revise plan if needed, or confirm alignment |
+| `phase:decision` | **STOP. Do NOT implement.** Only the user can authorize implementation. Wait for the initiator to confirm user approval. |
+
+**The partner agent NEVER implements.** Only the initiator presents the plan
+to the user. Implementation starts only after the initiator explicitly tells
+you the user approved and assigns you work.
 
 ## Non-Negotiable Rules
 
@@ -115,7 +123,8 @@ If you receive a message labeled `workflow:spec`:
 - **NEVER** skip phases or collapse directly to a finished spec.
 - **NEVER** read partner research before submitting your own research.
 - **NEVER** enter plan mode during research if it blocks tool usage.
-- **NEVER** implement before the user approves the final plan in chat.
+- **NEVER** implement when you receive a plan. Review it and send feedback — that's your job.
+- **NEVER** implement before the user approves the final plan in chat. Only the initiator talks to the user.
 - **ALWAYS** use `--thread spec/<topic>` for spec workflow messages.
 - **ALWAYS** use the label convention table above.
 - **ALWAYS** present the final plan to the user and wait for explicit approval.
