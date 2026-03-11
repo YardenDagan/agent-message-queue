@@ -9,7 +9,9 @@ amq swarm list                                    # Discover teams
 amq swarm join --team my-team --me codex          # Join team
 amq swarm tasks --team my-team                    # View tasks
 amq swarm claim --team my-team --task t1 --me codex  # Claim work
-amq swarm complete --team my-team --task t1 --me codex  # Mark done
+amq swarm complete --team my-team --task t1 --me codex [--evidence '{"tests_passed":true}']  # Mark done
+amq swarm fail --team my-team --task t1 --me codex --reason "tests red"  # Mark failed
+amq swarm block --team my-team --task t1 --me codex --reason "waiting on API"  # Mark blocked
 amq swarm bridge --team my-team --me codex        # Run task notification bridge
 ```
 
@@ -43,4 +45,6 @@ amq swarm bridge --team my-team --me codex --poll --poll-interval 5s &
 3. `amq swarm tasks --team <name>` — view available tasks
 4. `amq swarm claim --team <name> --task <id> --me <agent>` — claim a task
 5. Do the work
-6. `amq swarm complete --team <name> --task <id> --me <agent>` — mark done
+6. `amq swarm complete --team <name> --task <id> --me <agent> [--evidence <json>]` — mark done
+7. `amq swarm fail --team <name> --task <id> --me <agent> [--reason <str>]` — mark failed
+8. `amq swarm block --team <name> --task <id> --me <agent> [--reason <str>]` — mark blocked
